@@ -23,6 +23,7 @@
             --glow-color: rgba(255, 255, 255, 0.5);
             --accent-color: #888;
             --box-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.05);
         }
 
         body {
@@ -32,26 +33,30 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            min-height: 100vh; /* Alterado para permitir scroll */
             margin: 0;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-align: center;
+            overflow-x: hidden; /* Evita scroll lateral */
         }
 
-        /* Efeito de background sutil para não parecer vazio */
+        /* Efeito de background sutil */
         body::before {
             content: "";
-            position: absolute;
+            position: fixed; /* Fixado para cobrir tudo mesmo com scroll */
             top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #111 0%, #050505 100%);
             z-index: -1;
         }
 
+        header {
+            margin-top: 50px;
+        }
+
         h1 {
             font-family: 'Cinzel', serif;
-            font-size: clamp(1.5rem, 5vw, 3rem); /* Responsivo */
+            font-size: clamp(1.5rem, 5vw, 3rem);
             font-weight: 400;
             margin-bottom: 50px;
             text-shadow: 0 0 20px var(--glow-color);
@@ -59,7 +64,7 @@
 
         .countdown-container {
             background: var(--box-bg);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
             border-radius: 15px;
             padding: 40px;
             display: flex;
@@ -67,6 +72,7 @@
             justify-content: center;
             gap: 20px;
             backdrop-filter: blur(5px);
+            margin-bottom: 40px;
         }
 
         .time-segment {
@@ -89,20 +95,112 @@
         }
 
         .info-section {
-            margin-top: 60px;
             max-width: 600px;
-            text-transform: none; /* Texto normal para parecer um site real */
+            text-transform: none;
             color: #666;
             font-size: 0.9rem;
             line-height: 1.6;
             padding: 0 20px;
+            margin-bottom: 60px;
+        }
+
+        /* --- ESTILOS DA ÁREA DE LEAKS --- */
+        .leaks-container {
+            width: 90%;
+            max-width: 1000px;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            padding: 0 20px;
+        }
+
+        .leaks-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            display: inline-block;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .leaks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .leak-card {
+            background: var(--box-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .leak-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        .leak-image-wrapper {
+            width: 100%;
+            height: 200px; /* Altura fixa para alinhar os cards */
+            overflow: hidden;
+            background-color: #000;
+            position: relative;
+        }
+
+        .leak-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem preencher sem esticar */
+            transition: transform 0.5s ease;
+            opacity: 0.8;
+        }
+
+        .leak-card:hover .leak-image-wrapper img {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .leak-caption {
+            padding: 15px;
+            font-size: 0.85rem;
+            color: #ccc;
+            background: rgba(0, 0, 0, 0.3);
+            text-transform: none;
+            border-top: 1px solid var(--border-color);
+            flex-grow: 1; /* Garante que todos os cards tenham mesma altura */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tag de 'Novo' opcional */
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #fff;
+            color: #000;
+            font-size: 0.6rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            text-transform: uppercase;
         }
 
         footer {
-            margin-top: 40px;
-            padding-bottom: 20px;
+            margin-top: auto;
+            padding: 20px;
             font-size: 0.7rem;
             color: #333;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
         }
     </style>
 </head>
@@ -112,7 +210,8 @@
         <h1>MME REMAKE RELEASE DATE</h1>
     </header>
 
-    <main>
+    <main style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        
         <div class="countdown-container">
             <div class="time-segment">
                 <span id="days" class="number">00</span>
@@ -133,8 +232,45 @@
         </div>
 
         <section class="info-section">
-            <p>O Jogo MME Remake é um novo projeto do primeiro jogo, adicionando novas mecanicas, novidades e graficos. Esta página será atualizada conforme nos aproximamos do lançamento oficial.</p>
+            <p>O Jogo MME Remake é um novo projeto do primeiro jogo, adicionando novas mecânicas, novidades e gráficos. Esta página será atualizada conforme nos aproximamos do lançamento oficial.</p>
         </section>
+
+        <section class="leaks-container">
+            <h2 class="leaks-title">Galeria de Leaks</h2>
+            
+            <div class="leaks-grid">
+                
+                <div class="leak-card">
+                    <div class="leak-image-wrapper">
+                        <span class="badge">Novo</span>
+                        <img src="https://via.placeholder.com/400x300/1a1a1a/ffffff?text=Leak+1" alt="Imagem do Leak 1">
+                    </div>
+                    <div class="leak-caption">
+                        <p>Primeira imagem revelando o novo sistema de iluminação global.</p>
+                    </div>
+                </div>
+
+                <div class="leak-card">
+                    <div class="leak-image-wrapper">
+                        <img src="https://via.placeholder.com/400x300/1a1a1a/ffffff?text=Leak+2" alt="Imagem do Leak 2">
+                    </div>
+                    <div class="leak-caption">
+                        <p>Conceito inicial do novo design do personagem principal.</p>
+                    </div>
+                </div>
+
+                <div class="leak-card">
+                    <div class="leak-image-wrapper">
+                        <img src="https://via.placeholder.com/400x300/1a1a1a/ffffff?text=Cenário" alt="Imagem do Cenário">
+                    </div>
+                    <div class="leak-caption">
+                        <p>Prévia de um dos novos mapas multiplayer.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
     </main>
 
     <footer>
